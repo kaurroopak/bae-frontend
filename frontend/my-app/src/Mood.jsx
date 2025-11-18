@@ -3,11 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Mood.css';
 import MoodPrompt from './MoodPrompt';
 import { setMood } from './moodTheme';
-
-// MCP assets (local copies expected in public/assets)
-const imgVector = '/assets/9c4d4fecde8bbb47dac2042c0cc8097f98689bfe.svg';
-const imgVector8 = '/assets/14452e96a59325d345635764e62c9e3b15f6cbc4.svg';
-const imgVector12 = '/assets/47265a9ad1f884b5485f5415e8155517284c2e39.svg';
+import logo from './images/logo.jpg';
 
 const moods = [
   { id: 'happy', title: 'Happy', desc: 'Bright & Cheerful', colorClass: 'mood-happy' },
@@ -32,13 +28,15 @@ export default function Mood() {
     <div className="mood-root">
       <aside className="sidebar">
         <div className="brand">
-          <div className="logo">BAE</div>
-          <div className="tag">Bringing aesthetic to emotion</div>
+          <img
+            src={logo}
+            alt="BAE Logo"
+            className="brand-logo"
+            loading="lazy"
+          />
         </div>
-
         <nav className="nav">
-          <Link to="/dashboard" className="nav-btn">Home</Link>
-          <Link to="/profile" className="nav-btn">Profile</Link>
+          <Link to="/dashboard" className="nav-btn">Dashboard</Link>
           <Link to="/wardrobe" className="nav-btn">Wardrobe</Link>
           <Link to="/favorites" className="nav-btn">Favorites</Link>
           <Link to="/generator" className="nav-btn">Outfit Generator</Link>
@@ -57,11 +55,11 @@ export default function Mood() {
 
           <section className="prompt-card">
             <div className="prompt-inner">
-              <div className="mood-icon">
-                <img src={imgVector8} alt="mood icon" />
-              </div>
               <h2>How are you feeling today?</h2>
-              <p className="muted">Select your current mood or let us detect it using your webcam</p>
+              <p className="muted">
+                Select your current mood or let us detect it using your webcam
+              </p>
+
               <div className="actions-row">
                 <button className="btn auto" onClick={handleAutoDetect}>
                   Auto-Detect My Mood
@@ -74,9 +72,6 @@ export default function Mood() {
             {moods.map((m) => (
               <article key={m.id} className={`mood-card ${m.colorClass}`}>
                 <div className="mood-card-inner">
-                  <div className="mood-icon-spot">
-                    <img src={imgVector12} alt="icon" />
-                  </div>
                   <div className="mood-title">{m.title}</div>
                   <div className="mood-desc">{m.desc}</div>
                   <div className="mood-select">
@@ -89,13 +84,8 @@ export default function Mood() {
             ))}
           </section>
         </div>
-
-        <div className="bg-vectors">
-          <img src={imgVector} alt="bg-lines" />
-        </div>
       </main>
 
-      {/* Camera Popup */}
       {showPrompt && (
         <MoodPrompt
           onAutoDetect={(mood) => {

@@ -3,27 +3,39 @@ import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 import logo from './images/logo.jpg';
 
+const BACKEND_BASE = "https://bae-bringing-aesthetics-to-emotions.onrender.com";
+
 export default function SignupScreen() {
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Get form values
     const name = e.target[0].value;
     const email = e.target[1].value;
     const password = e.target[2].value;
 
-    console.log('Mock Signup submitted:', { name, email, password });
+    try {
+      const response = await fetch(`${BACKEND_BASE}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: name,
+          email: email,
+          password: password,
+        }),
+      });
 
-    // Optional: store in localStorage to simulate login
-    localStorage.setItem('mockUser', JSON.stringify({ name, email }));
+      const data = await response.json();
+      alert(data.message);
 
-    // Show success message
-    alert(`Signup successful! Welcome, ${name} 💜`);
-
-    // Redirect to login page
-    navigate('/');
+      if (response.ok) {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Error connecting to backend. Make sure the backend is running.");
+    }
   };
 
   return (

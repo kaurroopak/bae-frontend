@@ -1,21 +1,20 @@
-/* Simple tint overlay to subtly change UI colors based on mood */
-#mood-tint{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:999;
-  mix-blend-mode: color;
-  transition: background-color 320ms ease, opacity 320ms ease;
-  opacity:0;
+/* FORCE APPLY BACKGROUND
+html[data-mood="happy"] body,
+html[data-mood="happy"] #root {
+  background: #ffe066 !important;
 }
 
-body.mood-happy #mood-tint{ background: rgba(255,200,80,0.55); opacity:0.12 }
-body.mood-neutral #mood-tint{ background: rgba(160,160,180,0.55); opacity:0.06 }
-body.mood-sad #mood-tint{ background: rgba(80,130,255,0.55); opacity:0.12 }
-
-/* fallback: if mix-blend-mode unsupported, also apply slight backdrop filter on body */
-@supports not (mix-blend-mode: color) {
-  body.mood-happy{ filter: saturate(1.05) hue-rotate(-8deg) }
-  body.mood-sad{ filter: saturate(1.05) hue-rotate(12deg) }
-  body.mood-neutral{ filter: none }
+html[data-mood="neutral"] body,
+html[data-mood="neutral"] #root {
+  background: #d9d9d9 !important;
 }
+
+html[data-mood="sad"] body,
+html[data-mood="sad"] #root {
+  background: #8ab6d6 !important;
+}
+
+/* Smooth transitions 
+body, #root {
+  transition: background 0.5s ease !important;
+} */

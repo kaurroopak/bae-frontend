@@ -24,7 +24,8 @@
 /* Inner container */
 .wardrobe-inner {
   max-width: 1142px;
-  margin: 0 auto;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 /* Header section */
@@ -60,14 +61,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.btn.add {
-  background: linear-gradient(
-    180deg,
-    rgba(224, 195, 252, 0.35),
-    rgba(142, 197, 252, 0.35)
-  );
+  cursor: pointer;
 }
 
 /* Search bar */
@@ -107,6 +101,7 @@
   padding: 8px 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
 }
 
 .tag.active {
@@ -121,13 +116,23 @@
   margin-top: 28px;
 }
 
+/* Cards */
 .card {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
+.card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Image container */
 .card .image {
   height: 252px;
   background: linear-gradient(
@@ -135,8 +140,48 @@
     rgba(224, 195, 252, 0.2),
     rgba(142, 197, 252, 0.2)
   );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  position: relative;
 }
 
+.card .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image img {
+  transform: scale(1.05);
+}
+
+/* Optional overlay for category */
+.card .image::after {
+  content: attr(data-category);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.3s ease;
+}
+
+.card:hover .image::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card body */
 .card-body {
   padding: 12px;
 }
@@ -151,6 +196,36 @@
   font-size: 12px;
   margin-top: 6px;
 }
+.delete-btn {
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#ff7e5f,#feb47b);
+  color: #0f172a;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+.delete-btn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#ff7e5f,#feb47b);
+  color: #0f172a;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.restore-btn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#6dd5ed,#2193b0);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
 
 /* Responsive */
 @media (max-width: 1000px) {

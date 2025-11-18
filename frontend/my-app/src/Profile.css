@@ -1,34 +1,177 @@
-.profile-page-root{
-  min-height:100vh;
-  display:flex;
-  background: linear-gradient(180deg, rgba(224,195,252,1) 11%, rgba(142,197,252,1) 68%, rgba(102,126,234,1) 100%);
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
 }
 
-/* reserve the same sidebar width used in Dashboard */
-.sidebar-space{ width:280px; flex:0 0 280px }
-
-.profile-main{ flex:1; padding:48px 40px }
-
-.profile-card{
-  max-width:720px;
-  background: rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:16px;
-  padding:20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+.profile-bg {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e0c3fc 11%, #8ec5fc 68%, #667eea 107%);
+  padding: 48px 20px 80px 20px;
+  display: flex;
+  justify-content: center;
 }
-.profile-card.large{ padding:28px }
 
-.profile-header{ display:flex; gap:16px; align-items:center }
-.avatar-wrap{ width:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:9999px; background: rgba(255,255,255,0.12); }
-.avatar-wrap img{ width:36px; height:36px }
-.profile-info .name{ font-size:18px; font-weight:600; color:#fff }
-.profile-info .role{ color: rgba(255,255,255,0.75); font-size:12px }
-.profile-body{ margin-top:18px }
-.profile-body h3{ margin:0 0 8px 0 }
-.profile-body .muted{ color: rgba(0,0,0,0.45) }
-.actions{ display:flex; gap:12px; margin-top:18px; align-items:center }
-.actions .btn{ padding:10px 14px; border-radius:10px; background: rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.16); cursor:pointer }
-.actions .back{ color: rgba(255,255,255,0.85); text-decoration:underline }
+.profile-center-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center both cards */
+  gap: 32px; /* space between cards */
+  width: 100%;
+  max-width: 1000px;
+}
 
-@media (max-width:800px){ .sidebar-space{ display:none } .profile-main{ padding:24px } .profile-card{ width:100% } }
+.profile-container {
+  width: 100%;
+  background: rgba(255,255,255,0.10);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(204,204,255,0.12);
+  padding: 48px 48px 42px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-sizing: border-box;
+}
+
+.profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-username {
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+.profile-role {
+  font-size: 1.08rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.profile-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-label {
+  font-size: 1.08rem;
+  color: #B9E6F6;
+  font-weight: 500;
+}
+
+.profile-input {
+  background: rgba(255,255,255,0.17);
+  border: none;
+  border-radius: 14px;
+  padding: 16px 20px;
+  color: #fff;
+  font-size: 1.15rem;
+  outline: none;
+  width: 100%;
+  box-shadow: 0 2px 8px 0 rgba(177,177,201,0.11);
+}
+
+.profile-input:read-only {
+  opacity: 0.95;
+}
+
+.profile-input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+.delete-profile-btn {
+  background: rgba(255,0,0,0.3);
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.delete-profile-btn:hover {
+  background: rgba(255,0,0,0.5);
+}
+
+@media screen and (max-width: 768px) {
+  .profile-container {
+    max-width: 100%;
+    padding: 36px 24px;
+  }
+  .profile-row {
+    gap: 12px;
+  }
+}
+
+
+.back-dashboard-btn {
+  position: absolute;
+  top: 20px;          /* move a bit down */
+  right: 20px;        /* move a bit left */
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: none;
+  border-radius: 16px;  /* smaller roundness */
+  padding: 6px 14px;    /* smaller size */
+  font-size: 0.9rem;    /* smaller font */
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background 0.2s;
+}
+
+.back-dashboard-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+@media screen and (max-width: 768px) {
+  .back-dashboard-btn {
+    top: 16px;
+    right: 16px;
+    padding: 5px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Flash animation when saving */
+@keyframes saveFlashAnim {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+  50% { box-shadow: 0 0 20px 6px rgba(255,255,255,0.5); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+
+.save-flash {
+  animation: saveFlashAnim 0.5s ease-out;
+}

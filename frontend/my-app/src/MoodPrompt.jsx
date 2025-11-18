@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './MoodPrompt.css';
-import { setMood } from './moodTheme';
+import { setMood } from "./moodTheme.js";
 
 export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
   const videoRef = useRef(null);
@@ -47,10 +47,6 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
   }
 
   function fallbackMood() {
-    if (videoRef.current && canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      ctx.drawImage(videoRef.current, 0, 0);
-    }
     return 'neutral';
   }
 
@@ -61,17 +57,22 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
     const canvas = canvasRef.current;
     const video = videoRef.current;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    canvas.width = 224;
+    canvas.height = 224;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, 224, 224);
 
     const base64 = canvas.toDataURL('image/jpeg', 0.9);
 
     try {
-      const res = await fetch('https://bae-bringing-aesthetics-to-emotions.onrender.com/predict', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: base64 }),
-      });
+      const res = await fetch(
+        'https://bae-bringing-aesthetics-to-emotions.onrender.com/predict',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64 }),
+        }
+      );
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
@@ -82,7 +83,7 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
       setMood(mood);
       onAutoDetect?.(mood);
     } catch (err) {
-      console.error('Error connecting to Flask backend:', err);
+      console.error('Error connecting to backend:', err);
       const mood = fallbackMood();
       setMood(mood);
       onAutoDetect?.(mood);
@@ -93,12 +94,17 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
     }
   }
 
+  function handleManualMoodSelection(mood) {
+    setMood(mood);
+    onAutoDetect?.(mood);
+    onClose?.();
+  }
+
   return (
     <div className="mood-backdrop">
       <div className="mood-panel">
         <h3>Detect Your Mood</h3>
 
-        {/* Webcam */}
         <video ref={videoRef} className="mood-video" autoPlay playsInline muted />
 
         <div className="camera-actions">
@@ -108,11 +114,17 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
           <button className="btn" onClick={stopCamera}>Cancel</button>
         </div>
 
-        {/* Manual mood option */}
-        <button className="btn manual" onClick={onManual}>Choose Manually</button>
+        <div className="manual-selection" style={{ marginTop: '16px' }}>
+          <p>Or choose your mood manually:</p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '8px' }}>
+            <button className="btn manual" onClick={() => handleManualMoodSelection('happy')}>Happy</button>
+            <button className="btn manual" onClick={() => handleManualMoodSelection('neutral')}>Neutral</button>
+            <button className="btn manual" onClick={() => handleManualMoodSelection('sad')}>Sad</button>
+          </div>
+        </div>
+
         <button className="close-x" onClick={onClose}>✖</button>
 
-        {/* Hidden canvas for image capture */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 
         {errorMsg && <p className="error-text">{errorMsg}</p>}

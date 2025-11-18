@@ -2,12 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import "./Dashboard.css";
 import MoodPrompt from './MoodPrompt';
+import logo from './images/logo.jpg';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [showMoodPrompt, setShowMoodPrompt] = useState(false);
-  const [currentMood, setCurrentMood] = useState(null); // 🆕 store detected mood
+  const [currentMood, setCurrentMood] = useState(null);
+  const [userName, setUserName] = useState("Guest User");
+  const [wardrobeCount, setWardrobeCount] = useState(0);
+  const [favouritesCount, setFavouritesCount] = useState(0);
 
+  const API_URL = import.meta.env.VITE_API_URL; // <--- deployed backend URL
+
+  /* ---------------- LOAD USER INFO & MOOD ---------------- */
   useEffect(() => {
     try {
       const just = localStorage.getItem('justLoggedIn');
@@ -15,20 +22,49 @@ export default function Dashboard() {
         setShowMoodPrompt(true);
         localStorage.removeItem('justLoggedIn');
       }
-
-      // 🆕 If mood was already detected before, show it again
       const savedMood = localStorage.getItem('detectedMood');
       if (savedMood) setCurrentMood(savedMood);
+
+      const savedName = localStorage.getItem("userName");
+      if (savedName) setUserName(savedName);
     } catch (e) {}
   }, []);
 
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "userName") {
+        setUserName(e.newValue || "Guest User");
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  /* ---------------- FETCH WARDROBE & FAVOURITES COUNTS ---------------- */
+  useEffect(() => {
+    const userId = localStorage.getItem("userEmail");
+    if (!userId) return;
+
+    // Fetch wardrobe items
+    fetch(`${API_URL}/wardrobe/all?userId=${userId}`)
+      .then(res => res.json())
+      .then(data => setWardrobeCount(data.items?.length || 0))
+      .catch(err => console.error("Wardrobe fetch error:", err));
+
+    // Fetch favourites
+    fetch(`${API_URL}/getFavourites?userId=${userId}`)
+      .then(res => res.json())
+      .then(data => setFavouritesCount(data.favourites?.length || 0))
+      .catch(err => console.error("Favourites fetch error:", err));
+  }, [API_URL]);
+
+  /* ---------------- MOOD HANDLERS ---------------- */
   function handleAutoDetect(mood) {
-    console.log('Auto-detected mood:', mood);
     try {
       localStorage.setItem('moodPromptShown', 'true');
-      localStorage.setItem('detectedMood', mood); // 🆕 save it for later
+      localStorage.setItem('detectedMood', mood);
     } catch (e) {}
-    setCurrentMood(mood); // 🆕 display it on dashboard
+    setCurrentMood(mood);
     setShowMoodPrompt(false);
   }
 
@@ -44,29 +80,55 @@ export default function Dashboard() {
     try {
       localStorage.removeItem('moodPromptShown');
       localStorage.removeItem('detectedMood');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
     } catch (e) {}
     navigate('/');
   }
+
+  /* ---------------- QUICK ACTIONS ---------------- */
+  function goToWardrobe() { navigate('/wardrobe'); }
+  function goToUpload() { navigate('/upload'); }
+  function goToGenerator() { navigate('/generator'); }
 
   return (
     <div className="dashboard-root">
       <aside className="sidebar">
         <div className="brand">
-          <p className="tag">Bringing aesthetic to emotion</p>
+          <img
+            src={logo}
+            alt="BAE Logo"
+            className="brand-logo"
+            loading="lazy"
+          />
         </div>
         <nav className="nav">
-          <Link to="/dashboard" className="nav-btn active">Dashboard</Link>
-          <Link to="/wardrobe" className="nav-btn">Wardrobe</Link>
-          <Link to="/favorites" className="nav-btn">Favorites</Link>
-          <Link to="/generator" className="nav-btn">Outfit Generator</Link>
-          <Link to="/upload" className="nav-btn">Upload Clothes</Link>
+          <Link to="/dashboard" className="nav-btn active">
+            <span>Dashboard</span>
+          </Link>
+          <Link to="/wardrobe" className="nav-btn">
+            <span>Wardrobe</span>
+          </Link>
+          <Link to="/favorites" className="nav-btn">
+            <span>Favorites</span>
+          </Link>
+          <Link to="/generator" className="nav-btn">
+            <span>Outfit Generator</span>
+          </Link>
+          <Link to="/upload" className="nav-btn">
+            <span>Upload Clothes</span>
+          </Link>
         </nav>
-        <div className="profile">
-          <div className="profile-meta">
-            <div className="profile-name">USER</div>
-            
-          </div>
-          <button className="logout" onClick={handleLogout}>Logout</button>
+        <div style={{ marginTop: 'auto' }}>
+          <Link to="/profile" className="profile">
+            <div className="profile-meta">
+              <div className="profile-name">{userName}</div>
+              <div className="profile-link">View Profile</div>
+            </div>
+          </Link>
+          <button className="nav-btn logout" onClick={handleLogout} style={{ marginTop: 12 ,width: "100%" }}>
+            <span>Log Out</span>
+          </button>
         </div>
       </aside>
 
@@ -77,20 +139,19 @@ export default function Dashboard() {
             <p className="sub">Here’s what’s happening with your wardrobe today</p>
           </div>
 
-          {/* 🆕 Mood message here */}
           {currentMood && (
             <div className="mood-message">
-              <h2>Today's Detected Mood: <span>{currentMood}</span> 🌤️</h2>
+              <h2>Today's detected mood: <span>{currentMood}</span></h2>
             </div>
           )}
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-number">0</div>
+              <div className="stat-number">{wardrobeCount}</div>
               <div className="stat-label">Items in Wardrobe</div>
             </div>
             <div className="stat-card">
-              <div className="stat-number">0</div>
+              <div className="stat-number">{favouritesCount}</div>
               <div className="stat-label">Favorites Saved</div>
             </div>
           </div>
@@ -99,9 +160,9 @@ export default function Dashboard() {
             <div className="panel">
               <h3>Quick Actions</h3>
               <div className="action-list">
-                <div className="action">View Wardrobe Items</div>
-                <div className="action">Upload New Item</div>
-                <div className="action">Generate New Outfit</div>
+                <div className="quick-action" onClick={goToWardrobe} tabIndex={0} role="button">View Wardrobe Items</div>
+                <div className="quick-action" onClick={goToUpload} tabIndex={0} role="button">Upload New Item</div>
+                <div className="quick-action" onClick={goToGenerator} tabIndex={0} role="button">Generate New Outfit</div>
               </div>
             </div>
 
@@ -110,11 +171,13 @@ export default function Dashboard() {
               <p className="muted">Your vibe sets the tone! Detect or choose your mood.</p>
               <div className="action-list">
                 <div
-                  className="action detect"
+                  className="quick-action"
                   role="button"
                   tabIndex={0}
                   onClick={() => setShowMoodPrompt(true)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setShowMoodPrompt(true); }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') setShowMoodPrompt(true);
+                  }}
                 >
                   Detect My Mood
                 </div>

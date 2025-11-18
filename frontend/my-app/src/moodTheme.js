@@ -1,30 +1,16 @@
-// Lightweight mood theme manager
-export function initMood() {
-  try {
-    const mood = localStorage.getItem('detectedMood') || localStorage.getItem('mood') || 'neutral';
-    applyBodyMood(mood);
-  } catch (e) {
-    // ignore
-  }
+// moodTheme.js
+
+// Apply mood to <html> so your CSS works
+export function applyMoodTheme(mood) {
+  document.documentElement.setAttribute("data-mood", mood);
 }
 
 export function setMood(mood) {
-  try {
-    localStorage.setItem('detectedMood', mood);
-    applyBodyMood(mood);
-    // dispatch event for other parts of the app
-    window.dispatchEvent(new CustomEvent('moodchange', { detail: { mood } }));
-  } catch (e) {
-    // ignore
-  }
+  localStorage.setItem("userMood", mood);
+  applyMoodTheme(mood);
 }
 
-function applyBodyMood(mood) {
-  if (typeof document === 'undefined') return;
-  document.body.classList.remove('mood-happy', 'mood-neutral', 'mood-sad');
-  if (mood === 'happy') document.body.classList.add('mood-happy');
-  else if (mood === 'sad') document.body.classList.add('mood-sad');
-  else document.body.classList.add('mood-neutral');
+export function initMood() {
+  const savedMood = localStorage.getItem("userMood") || "neutral";
+  applyMoodTheme(savedMood);
 }
-
-export default { initMood, setMood };

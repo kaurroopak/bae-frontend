@@ -1,36 +1,174 @@
-.upload-overlay-backdrop{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: rgba(2,6,23,0.45);
-  z-index:1200;
-  padding:24px;
+/* ============================
+   Upload Overlay Modal
+   ============================ */
+.upload-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 24px;
+  background: var(--bg);       /* <-- dynamic mood background */
+  transition: background 0.6s ease;
+  backdrop-filter: blur(4px);  /* subtle blur for overlay */
 }
-.overlay-panel{
-  width:800px;
-  max-width:calc(100% - 48px);
-  background: rgba(255,255,255,0.34);
-  backdrop-filter: blur(10px);
-  border-radius:16px;
-  box-shadow: 0 24px 60px rgba(2,6,23,0.45);
-  padding:20px 24px 28px 24px;
-  color: #fff;
-}
-.overlay-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px }
-.overlay-header h3{ margin:0; font-size:18px }
-.overlay-close{ background:transparent; border:0; color:rgba(255,255,255,0.95); font-size:22px; cursor:pointer }
-.overlay-form{ display:flex; flex-direction:column; gap:12px }
-.row.two-cols{ display:flex; gap:12px }
-.field{ display:flex; flex-direction:column; gap:8px }
-.label{ font-size:12px; color: rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:0.6px }
-.input{ background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); padding:12px 14px; border-radius:12px; color:rgba(255,255,255,0.95); outline:none }
-.input::placeholder{ color: rgba(255,255,255,0.55) }
-.overlay-actions{ display:flex; justify-content:center; margin-top:6px }
-.add-btn{ padding:10px 18px; border-radius:14px; border:0; background:linear-gradient(90deg,#fbc2eb,#a6c1ee); color:#0f172a; font-weight:700; box-shadow:0 8px 30px rgba(2,6,23,0.12); cursor:pointer }
 
-@media (max-width:900px){
-  .overlay-panel{ width:100%; padding:16px }
-  .row.two-cols{ flex-direction:column }
+.upload-overlay-backdrop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);                  /* mood-based gradient */
+  opacity: 0.25;                          /* subtle overlay behind modal */
+  z-index: -1;
+  transition: background 0.6s ease;
+}
+
+.overlay-panel {
+  width: 800px;
+  max-width: calc(100% - 48px);
+  background: rgba(255,255,255,0.24);     /* slightly more transparent to show mood */
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  padding: 20px 24px 28px 24px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: background 0.6s ease, box-shadow 0.25s ease;
+}
+
+/* HEADER */
+.overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.overlay-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.overlay-close {
+  background: transparent;
+  border: 0;
+  color: rgba(255,255,255,0.95);
+  font-size: 22px;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.overlay-close:hover {
+  color: #ffebc3; /* subtle highlight on hover */
+}
+
+/* IMAGE PREVIEW */
+.preview-box {
+  width: 100%;
+  max-height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* PREDICTED CATEGORY PILL */
+.predicted-pill {
+  font-size: 2px;
+  color: #fff;
+  text-align: center;
+  background: rgba(0,0,0,0.25);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+/* FORM */
+.overlay-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row.two-cols {
+  display: flex;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 12px 14px;
+  border-radius: 12px;
+  color: rgba(16, 16, 16, 0.95);
+  outline: none;
+  transition: background 0.25s ease, border 0.25s ease;
+  font-size: 12px;
+}
+
+.input::placeholder {
+  color: rgba(16, 16, 16, 0.95);
+}
+
+.input:focus {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.28);
+}
+
+/* BUTTONS */
+.overlay-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.add-btn {
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 0;
+  background:var(--bg);
+  color: #0f172a;
+  font-weight: 700;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.12);
+  cursor: pointer;
+  transition: 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.add-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 40px rgba(2,6,23,0.2);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .overlay-panel {
+    width: 100%;
+    padding: 16px;
+  }
+  .row.two-cols {
+    flex-direction: column;
+  }
 }
