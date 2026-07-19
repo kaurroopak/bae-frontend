@@ -37,7 +37,8 @@ export default function UploadOverlay({ file, predictedCategory, mood, onClose, 
     e.preventDefault();
     const payload = {
       name: name.trim(),
-      usage: usage || predictedCategory,
+      category: usage || predictedCategory,
+      usage,
       gender,
       color,
       season,
