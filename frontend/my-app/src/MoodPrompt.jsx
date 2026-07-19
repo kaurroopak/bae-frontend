@@ -54,36 +54,38 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
     if (!videoRef.current || !canvasRef.current) return;
 
     setProcessing(true);
+
     const canvas = canvasRef.current;
     const video = videoRef.current;
-
     canvas.width = 224;
     canvas.height = 224;
-    const ctx = canvas.getContext('2d');
+
+    const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0, 224, 224);
 
-    const base64 = canvas.toDataURL('image/jpeg', 0.9);
-
     try {
+      const blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", 0.9)
+      );
+      const formData = new FormData();
+      formData.append("image", blob, "capture.jpg");
       const res = await fetch(
-        'https://bae-bringing-aesthetics-to-emotions.onrender.com/predict',
+        "https://bae-bringing-aesthetics-to-emotions.onrender.com/predict",
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64 }),
+          method: "POST",
+          body: formData,
         }
       );
-
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const data = await res.json();
-      console.log('Server Response:', data);
-
-      const mood = data?.mood || fallbackMood();
+      console.log("Mood Prediction:", data);
+      const mood = data.mood || fallbackMood();
       setMood(mood);
       onAutoDetect?.(mood);
     } catch (err) {
-      console.error('Error connecting to backend:', err);
+      console.error(err);
       const mood = fallbackMood();
       setMood(mood);
       onAutoDetect?.(mood);
