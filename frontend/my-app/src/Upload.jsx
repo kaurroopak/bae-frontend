@@ -41,13 +41,70 @@ export default function Upload() {
     setShowOverlay(true);
   }
 
+  async function resizeImage(file, maxSize = 1024) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.onload = () => {
+        let { width, height } = img;
+
+        if (width > height) {
+          if (width > maxSize) {
+            height = Math.round((height * maxSize) / width);
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = Math.round((width * maxSize) / height);
+            height = maxSize;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error("Failed to resize image."));
+              return;
+            }
+            resolve(
+              new File(
+                [blob],
+                file.name,
+                {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                }
+              )
+            );
+          },
+          "image/jpeg",
+          0.9
+        );
+      };
+
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
   async function handleOverlayAdd(itemData) {
     if (!uploaded?.file) return;
 
     try {
-      console.log("Removing background in browser...");
+      // Resize image
+      console.log("Resizing image...");
+      const resizedFile = await resizeImage(uploaded.file);
 
       // Remove background
+      console.log("Background removal...");   
       const blob = await removeBackground(uploaded.file);
 
       // Convert to PNG File
@@ -144,8 +201,8 @@ export default function Upload() {
             </div>
 
             <div className="pro-tip">
-              <h4>Note</h4>
-              <p>Backgrounds are removed automatically before upload.</p>
+              <h4>Pro Tip</h4>
+              <p>Place the clothing on a plain, contrasting surface and avoid including your hands in the frame.</p>
             </div>
           </section>
         </main>
