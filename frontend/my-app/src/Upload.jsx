@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { removeBackground } from "@imgly/background-removal";
 import './Upload.css';
 import UploadOverlay from './UploadOverlay.jsx';
 import logo from './images/logo.jpg';
@@ -44,10 +45,27 @@ export default function Upload() {
     if (!uploaded?.file) return;
 
     try {
-      const formData = new FormData();
+      console.log("Removing background in browser...");
 
-      formData.append("image", uploaded.file);
+      // Remove background
+      const blob = await removeBackground(uploaded.file);
+
+      // Convert to PNG File
+      const processedFile = new File(
+        [blob],
+        uploaded.file.name.replace(/\.[^/.]+$/, "") + ".png",
+        {
+          type: "image/png",
+        }
+      );
+
+      console.log("Background removed.");
+
+      const formData = new FormData();
+      formData.append("image", processedFile);
       formData.append("userId", USER);
+
+      console.log("Uploading...");
 
       const res = await fetch(`${BACKEND_BASE}/wardrobe/add`, {
         method: "POST",
@@ -126,8 +144,8 @@ export default function Upload() {
             </div>
 
             <div className="pro-tip">
-              <h4>Pro Tip</h4>
-              <p>Take photos against a plain background for best results with auto background removal</p>
+              <h4>Note</h4>
+              <p>Backgrounds are removed automatically before upload.</p>
             </div>
           </section>
         </main>
