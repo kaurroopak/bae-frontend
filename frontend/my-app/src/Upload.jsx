@@ -27,42 +27,27 @@ export default function Upload() {
 
   function handleFiles(files) {
     if (!files || files.length === 0) return;
+
     const file = files[0];
     const preview = URL.createObjectURL(file);
-    setUploaded({ file, preview });
-    setShowOverlay(true);
-    setPredictedCategory("");
-    predictCategory(file);
-  }
 
-  async function predictCategory(file) {
-    try {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const res = await fetch(`${BACKEND_BASE}/predict-outfit`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: reader.result }),
-        });
-        const data = await res.json();
-        if (res.ok) setPredictedCategory(data.predicted_class);
-        else console.error("Prediction error:", data.error);
-      };
-    } catch (err) {
-      console.error(err);
-    }
+    setUploaded({
+      file,
+      preview,
+    });
+
+    setPredictedCategory("");
+    setShowOverlay(true);
   }
 
   async function handleOverlayAdd(itemData) {
     if (!uploaded?.file) return;
+
     try {
       const formData = new FormData();
+
       formData.append("image", uploaded.file);
       formData.append("userId", USER);
-
-      const category = itemData.category || predictedCategory || "Unknown";
-      formData.append("category", category);
 
       const res = await fetch(`${BACKEND_BASE}/wardrobe/add`, {
         method: "POST",
@@ -70,12 +55,24 @@ export default function Upload() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      if (!res.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
 
       setShowOverlay(false);
+
+      if (uploaded.preview) {
+        URL.revokeObjectURL(uploaded.preview);
+      }
+
       setUploaded(null);
       setPredictedCategory("");
-      alert("Item uploaded successfully!");
+
+      alert(
+        `Item uploaded successfully!\nCategory: ${data.predicted_category}`
+      );
+
     } catch (err) {
       console.error(err);
       alert("Error uploading item: " + err.message);
