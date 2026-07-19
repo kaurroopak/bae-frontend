@@ -14,10 +14,14 @@ export default function Trash() {
 
   const fetchTrash = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/wardrobe/all?userId=${USER}`);
+      const res = await fetch(`${BASE_URL}/wardrobe/trash?userId=${USER}`);
       const data = await res.json();
-      if (res.ok) setDeletedItems(data.items.filter(i => i.deleted));
-      else console.error(data.error);
+
+      if (res.ok) {
+        setDeletedItems(data.items);
+      } else {
+        console.error(data.error);
+      }
     } catch (err) {
       console.error("Error fetching trash:", err);
     } finally { setLoading(false); }
