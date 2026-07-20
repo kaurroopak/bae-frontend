@@ -22,6 +22,33 @@ export default function Favorites() {
       .catch((err) => console.error(err));
   }, []);
 
+  async function removeFavourite(id) {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/removeFavourite`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to remove favourite.");
+      }
+
+      setFavs((prev) => prev.filter((item) => item.id !== id));
+
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  }
+
   return (
     <div className="favorites-root">
       <aside className="sidebar">
@@ -70,6 +97,11 @@ export default function Favorites() {
                     <span className="pill">2 items</span>
                     <span className="pill">Saved</span>
                   </div>
+                  <button
+                    className="remove-fav-btn"
+                    onClick={() => removeFavourite(fav.id)}
+                  > Remove
+                  </button>
                 </div>
               </article>
             ))}

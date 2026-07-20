@@ -197,3 +197,29 @@
   position: absolute;
   bottom: 0;
 }
+
+/* Remove Favourite Button*/
+.remove-fav-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.remove-fav-btn:hover {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239,68,68,0.35);
+}
+
+.remove-fav-btn:active {
+  transform: scale(0.98);
+}
