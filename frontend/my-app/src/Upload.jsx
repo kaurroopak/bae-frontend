@@ -188,7 +188,7 @@ export default function Upload() {
               <div className="drop-inner">
                 <div className="upload-icon" />
                 <h2>Drop your images here</h2>
-                <p className="muted">or click to browse from your computer</p>
+                <p className="muted">Backgrounds are removed automatically before upload.</p>
                 <button className="choose-btn" onClick={openFilePicker}>Choose Files</button>
                 <input
                   ref={fileInputRef}
@@ -201,8 +201,15 @@ export default function Upload() {
             </div>
 
             <div className="pro-tip">
-              <h4>Pro Tip</h4>
-              <p>Place the clothing on a plain, contrasting surface and avoid including your hands in the frame.</p>
+              <h4>📸 Best Results</h4>
+
+              <ul className="upload-tips">
+                <li>Lay the clothing flat on a plain, contrasting background.</li>
+                <li>Avoid holding the clothing in your hands while taking the photo.</li>
+                <li>Ensure the entire garment is visible inside the frame.</li>
+                <li>Use good lighting and avoid heavy shadows.</li>
+                <li>High-quality images produce faster and cleaner background removal.</li>
+              </ul>
             </div>
           </section>
         </main>
