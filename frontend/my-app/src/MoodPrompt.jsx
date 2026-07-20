@@ -57,11 +57,40 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
+
     canvas.width = 224;
     canvas.height = 224;
 
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, 224, 224);
+
+    // Get the actual webcam resolution
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+
+    // Find the largest centered square
+    const cropSize = Math.min(videoWidth, videoHeight);
+    const cropX = (videoWidth - cropSize) / 2;
+    const cropY = (videoHeight - cropSize) / 2;
+
+    // Mirror the image (same as preview)
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+
+    // Crop the center square and resize to 224x224
+    ctx.drawImage(
+      video,
+      cropX,
+      cropY,
+      cropSize,
+      cropSize,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    // Reset transform
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     try {
       const blob = await new Promise((resolve) =>
