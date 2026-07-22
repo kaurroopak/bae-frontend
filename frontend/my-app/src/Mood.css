@@ -13,19 +13,14 @@
 /* ============================
    MOOD THEMES — UPDATED
    ============================ */
+
 :root[data-mood="happy"] {
-  --bg: linear-gradient(135deg, #91f2d0 0%, #05869d 100%);
-  transition: background 0.7s ease;
-
-}
-
-:root[data-mood="neutral"] {
   --bg: linear-gradient(180deg, rgba(224,195,252,1) 11%, rgba(142,197,252,1) 68%, rgba(102,126,234,1) 100%);
   transition: background 0.7s ease;
 }
 
 
-:root[data-mood="sad"] {
+:root[data-mood="neutral"] {
   --bg: linear-gradient(135deg, #3c7ca7 0%, #042a48de 100%);
   transition: background 0.7s ease;
 
@@ -244,9 +239,6 @@
   box-shadow: inset 0 0 0 1px rgba(156,163,175,0.06);
 }
 
-.mood-sad {
-  box-shadow: inset 0 0 0 1px rgba(96,165,250,0.06);
-}
 
 /* ============================
    BACKGROUND VECTOR

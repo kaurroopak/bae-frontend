@@ -7,8 +7,7 @@ import logo from './images/logo.jpg';
 
 const moods = [
   { id: 'happy', title: 'Happy', desc: 'Bright & Cheerful', colorClass: 'mood-happy' },
-  { id: 'neutral', title: 'Neutral', desc: 'Balanced & Calm', colorClass: 'mood-neutral' },
-  { id: 'sad', title: 'Sad', desc: 'Soft & Comforting', colorClass: 'mood-sad' }
+  { id: 'neutral', title: 'Neutral', desc: 'Balanced & Calm', colorClass: 'mood-neutral' }
 ];
 
 export default function Mood() {

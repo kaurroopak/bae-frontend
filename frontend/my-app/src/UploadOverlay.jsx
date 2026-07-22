@@ -19,12 +19,9 @@ export default function UploadOverlay({ file, predictedCategory, mood, onClose, 
       const panel = document.querySelector('.overlay-panel');
       switch (mood) {
         case 'happy':
-          panel.style.setProperty('--bg', 'linear-gradient(135deg, #FFE4B2, #FF8C7E)');
-          break;
-        case 'neutral':
           panel.style.setProperty('--bg', 'linear-gradient(135deg, #E6D5B8, #B89D7F)');
           break;
-        case 'sad':
+        case 'neutral':
           panel.style.setProperty('--bg', 'linear-gradient(135deg, #89F7FE, #66A6FF)');
           break;
         default:

@@ -150,7 +150,6 @@ export default function MoodPrompt({ onAutoDetect, onManual, onClose }) {
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '8px' }}>
             <button className="btn manual" onClick={() => handleManualMoodSelection('happy')}>Happy</button>
             <button className="btn manual" onClick={() => handleManualMoodSelection('neutral')}>Neutral</button>
-            <button className="btn manual" onClick={() => handleManualMoodSelection('sad')}>Sad</button>
           </div>
         </div>
 
